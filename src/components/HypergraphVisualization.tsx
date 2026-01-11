@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import ForceGraph2D from "react-force-graph-2d";
+import type { ForceGraphMethods } from "react-force-graph-2d";
 import { convertHypergraphToGraph } from "../utils/hypergraphConverter";
 import type { HypergraphData, GraphData } from "../types/hypergraph";
 
@@ -13,7 +14,7 @@ export function HypergraphVisualization({
   graphData: providedGraphData,
 }: HypergraphVisualizationProps) {
   const graphData = providedGraphData || convertHypergraphToGraph(data);
-  const fgRef = useRef<any>();
+  const fgRef = useRef<ForceGraphMethods>(null!);
 
   // Convert to format expected by react-force-graph
   const graphDataFormatted = {
@@ -181,12 +182,6 @@ export function HypergraphVisualization({
         d3AlphaDecay={0.02}
         d3VelocityDecay={0.3}
         nodeRelSize={8}
-        d3Force={{
-          charge: { strength: -200 },
-          center: { strength: 0.3 },
-          collide: { radius: 50, strength: 0.5 },
-          link: { distance: 100 },
-        }}
       />
     </div>
   );
