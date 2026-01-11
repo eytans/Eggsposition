@@ -15,12 +15,8 @@ const emptyHypergraphData = {
 function App() {
   const [showStats, setShowStats] = useState(true);
   const [graphData, setGraphData] = useState<GraphData | null>(null);
-  const [fullGraphData, setFullGraphData] = useState<GraphData | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [useRegex, setUseRegex] = useState(false);
-  const [kNearest, setKNearest] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadFile = (file: File) => {

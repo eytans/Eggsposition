@@ -141,7 +141,7 @@ export function HypergraphVisualization({
         linkDirectionalArrowRelPos={1}
         linkDirectionalParticles={0}
         linkLabel="label"
-        linkCanvasObjectMode={() => "after"}
+        linkCanvasObjectMode={() => "after" as const}
         linkCanvasObject={(
           link: any,
           ctx: CanvasRenderingContext2D,
@@ -180,12 +180,12 @@ export function HypergraphVisualization({
         cooldownTime={2000}
         d3AlphaDecay={0.02}
         d3VelocityDecay={0.3}
-        linkDistance={100}
         nodeRelSize={8}
         d3Force={{
           charge: { strength: -200 },
           center: { strength: 0.3 },
           collide: { radius: 50, strength: 0.5 },
+          link: { distance: 100 },
         }}
       />
     </div>

@@ -85,7 +85,7 @@ export function convertEGraphToGraph(egraph: SerializedEGraph): GraphData {
   }
 
   // Create nodes for all e-classes
-  for (const [eclassId, count] of eclassNodeCounts) {
+  for (const [eclassId] of eclassNodeCounts) {
     const color = eclassColors.get(eclassId) || "#64748b";
     const classData = egraph.class_data?.[eclassId];
 
