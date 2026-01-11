@@ -87,13 +87,9 @@ export function convertEGraphToGraph(egraph: SerializedEGraph): GraphData {
   // Create nodes for all e-classes
   for (const [eclassId] of eclassNodeCounts) {
     const color = eclassColors.get(eclassId) || "#64748b";
-    const classData = egraph.class_data?.[eclassId];
 
-    // Use type if available, otherwise show the full e-class ID
-    let label = eclassId;
-    if (classData?.type) {
-      label = `${classData.type}`;
-    }
+    // Always show the full e-class ID
+    const label = eclassId;
 
     nodes.push({
       id: `eclass-${eclassId}`,
