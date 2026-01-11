@@ -1,0 +1,100 @@
+#!/usr/bin/env node
+
+/**
+ * Eggsposition - E-graph Visualization CLI
+ * Validates and displays info about egraph-serialize JSON files
+ */
+
+import { readFileSync } from 'fs';
+
+function printUsage() {
+  console.log(`
+╔═══════════════════════════════════════════════════════════════╗
+║                      EGGSPOSITION                             ║
+║              E-graph Visualization Tool                       ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Usage:
+  eggsposition <file.json>
+
+Arguments:
+  file.json    Path to an e-graph JSON file (egraph-serialize format)
+
+Examples:
+  eggsposition fibonacci.json
+  eggsposition egraph-serialize/tests/tiny.json
+
+The tool will:
+  1. Validate the JSON file
+  2. Display statistics about the e-graph
+  3. Instructions for visualization
+`);
+}
+
+function main() {
+  const args = process.argv.slice(2);
+
+  if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
+    printUsage();
+    process.exit(0);
+  }
+
+  const filePath = args[0];
+
+  try {
+    console.log(`\n📂 Loading e-graph from: ${filePath}`);
+    const jsonContent = readFileSync(filePath, 'utf-8');
+
+    console.log('🔍 Parsing e-graph...');
+    const egraph = JSON.parse(jsonContent);
+
+    // Validate basic structure
+    if (!egraph.nodes || typeof egraph.nodes !== 'object') {
+      throw new Error('Invalid egraph format: missing or invalid "nodes" field');
+    }
+
+    const nodeCount = Object.keys(egraph.nodes).length;
+    console.log(`✅ Parsed e-graph with ${nodeCount} nodes`);
+
+    // Count e-classes
+    const eclasses = new Set(Object.values(egraph.nodes).map(n => n.eclass));
+    console.log(`📊 E-graph contains ${eclasses.size} e-classes`);
+
+    if (egraph.root_eclasses && egraph.root_eclasses.length > 0) {
+      console.log(`🌳 Root e-classes: ${egraph.root_eclasses.join(', ')}`);
+    }
+
+    // Count nodes with children
+    const nodesWithChildren = Object.values(egraph.nodes).filter(
+      n => n.children && n.children.length > 0
+    ).length;
+    console.log(`🔗 Nodes with children: ${nodesWithChildren}`);
+
+    // Find most common operations
+    const ops = Object.values(egraph.nodes).map(n => n.op);
+    const opCounts = ops.reduce((acc, op) => {
+      acc[op] = (acc[op] || 0) + 1;
+      return acc;
+    }, {});
+    const topOps = Object.entries(opCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    console.log(`\n🔧 Top operations:`);
+    topOps.forEach(([op, count]) => {
+      console.log(`   ${op}: ${count}`);
+    });
+
+    console.log('\n✨ E-graph validation successful!\n');
+    console.log('📺 To visualize:');
+    console.log('   1. Run: npm run dev');
+    console.log('   2. Open http://localhost:5173 in your browser');
+    console.log(`   3. Click "Choose File" and select ${filePath}\n`);
+
+  } catch (error) {
+    console.error(`\n❌ Error: ${error instanceof Error ? error.message : String(error)}\n`);
+    process.exit(1);
+  }
+}
+
+main();
